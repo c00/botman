@@ -1,0 +1,4 @@
+# github.com/sashabaranov/go-openai v1.20.3
+## explicit; go 1.18
+github.com/sashabaranov/go-openai
+github.com/sashabaranov/go-openai/internal
