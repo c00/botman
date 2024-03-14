@@ -24,3 +24,5 @@ echo Quote a Bob Kelso joke | botman
 ls -al | botman "Which files are hidden?"
 cat deployment.yaml | botman "how many replicas will this run?"
 ```
+
+![demo](https://github.com/c00/botman/blob/main/assets/botman-demo.gif?raw=true)
