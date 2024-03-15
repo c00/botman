@@ -74,12 +74,17 @@ Botman lets you talk to an LLM. It is optimized for use in the terminal.
 
 Usage: 
 
-botman "tell me a joke about the golang gopher"
-echo Quote a Bob Kelso joke | botman
+$ botman "tell me a joke about the golang gopher"
+$ echo Quote a Bob Kelso joke | botman
 `, version)
 }
 
 func getResponse(content string) {
+	if content == "" {
+		fmt.Print("No input in stdin, nor as an argument.\n\n")
+		printHelp()
+		os.Exit(0)
+	}
 	client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
 	stream, err := client.CreateChatCompletionStream(
 		context.Background(),
