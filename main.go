@@ -12,7 +12,7 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
-const version = "1.0"
+const version = "1.0.1"
 
 func getPipedIn() string {
 	info, err := os.Stdin.Stat()
@@ -69,13 +69,23 @@ func main() {
 }
 
 func printHelp() {
-	fmt.Printf(`Botman %v
-Botman lets you talk to an LLM. It is optimized for use in the terminal. 
+	fmt.Printf(`Command Name: botman 
 
-Usage: 
+Usage: botman [OPTIONS] PROMPT
 
-$ botman "tell me a joke about the golang gopher"
-$ echo Quote a Bob Kelso joke | botman
+Version: %v
+
+Description:
+Botman lets you talk to an LLM. It is optimized for use in the terminal. It accepts both stdin and arguments.
+
+Options:
+	-h                      Show this help message and exit
+	
+PROMPT: Any text prompt to ask the LLM.
+
+Examples:
+	1. Basic usage: botman "tell me a joke about the golang gopher"
+	2. using stdin: echo Quote a Bob Kelso joke | botman
 `, version)
 }
 
@@ -89,7 +99,7 @@ func getResponse(content string) {
 	stream, err := client.CreateChatCompletionStream(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT4TurboPreview,
+			Model: openai.GPT4o,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleSystem,
@@ -121,7 +131,7 @@ func getResponse(content string) {
 			os.Exit(1)
 		}
 
-		fmt.Printf(response.Choices[0].Delta.Content)
+		fmt.Print(response.Choices[0].Delta.Content)
 	}
 
 }
