@@ -35,8 +35,8 @@ In interactive mode, the program does not exit after a response, but instead wai
 
 ```bash
 # Start interactive mode without an initial prompt
-bot -i
+botman -i
 
 # Start interactive mode with arguments
-bot -i How many bees in a bonnet?
+botman -i How many bees in a bonnet?
 ```
