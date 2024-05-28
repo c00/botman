@@ -20,6 +20,7 @@ PROMPT: Any text prompt to ask the LLM.
 
 Examples:
 	1. Basic usage: botman "tell me a joke about the golang gopher"
-	2. using stdin: echo Quote a Bob Kelso joke | botman
+	2. Using stdin: echo Quote a Bob Kelso joke | botman
+	3. Interactive mode: botman -i
 `, version)
 }

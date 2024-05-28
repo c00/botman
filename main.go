@@ -143,9 +143,10 @@ func getResponse(content string) {
 	for {
 		response, err := stream.Recv()
 		if errors.Is(err, io.EOF) {
+			responseMessage := strings.Join(responseContent, "")
 			messages = append(messages, openai.ChatCompletionMessage{
 				Role:    openai.ChatMessageRoleAssistant,
-				Content: strings.Join(responseContent, ""),
+				Content: responseMessage,
 			})
 			return
 		}
