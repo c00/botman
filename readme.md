@@ -26,3 +26,17 @@ cat deployment.yaml | botman "how many replicas will this run?"
 ```
 
 ![demo](https://github.com/c00/botman/blob/main/assets/botman-demo.gif?raw=true)
+
+## Interactive mode
+
+Use interactive mode by giving the `-i` flag.
+
+In interactive mode, the program does not exit after a response, but instead waits for your input.
+
+```bash
+# Start interactive mode without an initial prompt
+bot -i
+
+# Start interactive mode with arguments
+bot -i How many bees in a bonnet?
+```

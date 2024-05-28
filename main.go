@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"errors"
 	"flag"
@@ -12,7 +13,14 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
-const version = "1.0.1"
+const version = "1.0.2"
+
+var messages []openai.ChatCompletionMessage = []openai.ChatCompletionMessage{
+	{
+		Role:    openai.ChatMessageRoleSystem,
+		Content: "Be concise. If code or a cli command is asked, only return the code or command. Do not add code block backticks. Output in plain text",
+	},
+}
 
 func getPipedIn() string {
 	info, err := os.Stdin.Stat()
@@ -44,7 +52,7 @@ func getArg() string {
 			continue
 		}
 
-		if strings.HasPrefix("-", a) {
+		if strings.HasPrefix(a, "-") {
 			continue
 		}
 
@@ -56,6 +64,8 @@ func getArg() string {
 
 func main() {
 	helpFlag := flag.Bool("h", false, "Display help information")
+	interactiveFlag := flag.Bool("i", false, "Interactive mode")
+
 	flag.Parse()
 	if *helpFlag {
 		printHelp()
@@ -65,51 +75,60 @@ func main() {
 	in := getPipedIn()
 	arg := getArg()
 
-	getResponse(strings.TrimSpace(fmt.Sprintf("%v %v", in, arg)))
-}
+	content := strings.TrimSpace(fmt.Sprintf("%v %v", in, arg))
 
-func printHelp() {
-	fmt.Printf(`Command Name: botman 
-
-Usage: botman [OPTIONS] PROMPT
-
-Version: %v
-
-Description:
-Botman lets you talk to an LLM. It is optimized for use in the terminal. It accepts both stdin and arguments.
-
-Options:
-	-h                      Show this help message and exit
-	
-PROMPT: Any text prompt to ask the LLM.
-
-Examples:
-	1. Basic usage: botman "tell me a joke about the golang gopher"
-	2. using stdin: echo Quote a Bob Kelso joke | botman
-`, version)
-}
-
-func getResponse(content string) {
-	if content == "" {
+	if content == "" && !*interactiveFlag {
 		fmt.Print("No input in stdin, nor as an argument.\n\n")
 		printHelp()
 		os.Exit(0)
 	}
+
+	//Main program loop
+	for {
+		if content != "" {
+			getResponse(content)
+		}
+
+		if *interactiveFlag {
+			content = getCliInput()
+			if content == "" {
+				break
+			}
+		} else {
+			break
+		}
+	}
+
+	fmt.Println()
+}
+
+func getCliInput() string {
+	//Wait for an enter
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("\n\nYou: ")
+	text, _ := reader.ReadString('\n')
+
+	if text == "\n" {
+		return ""
+	}
+
+	fmt.Println()
+
+	return text
+}
+
+func getResponse(content string) {
+	messages = append(messages, openai.ChatCompletionMessage{
+		Role:    openai.ChatMessageRoleUser,
+		Content: content,
+	})
+
 	client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
 	stream, err := client.CreateChatCompletionStream(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT4o,
-			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleSystem,
-					Content: "Be concise. If code or a cli command is asked, only return the code or command. Do not add code block backticks. Output in plain text",
-				},
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: content,
-				},
-			},
+			Model:    openai.GPT4o,
+			Messages: messages,
 		},
 	)
 
@@ -119,10 +138,15 @@ func getResponse(content string) {
 	}
 	defer stream.Close()
 
+	responseContent := make([]string, 0, 50)
+
 	for {
 		response, err := stream.Recv()
 		if errors.Is(err, io.EOF) {
-			fmt.Println()
+			messages = append(messages, openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleAssistant,
+				Content: strings.Join(responseContent, ""),
+			})
 			return
 		}
 
@@ -132,6 +156,7 @@ func getResponse(content string) {
 		}
 
 		fmt.Print(response.Choices[0].Delta.Content)
+		responseContent = append(responseContent, response.Choices[0].Delta.Content)
 	}
 
 }
