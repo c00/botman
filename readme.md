@@ -1,8 +1,8 @@
-# Botman
+# botman
 
-Botman lets you talk to an LLM. Currently only openAi GPT 4o. It is optimized for use in the terminal. Can use `stdin` or an argument for input, outputs content to `stdout` and errors to `stderr`.
+`botman` lets you talk to an LLM. Currently it uses openAI ChatGPT-4o. It is optimized for use in the terminal. You can use `stdin` or an argument for input, outputs content to `stdout` and errors to `stderr`.
 
-Note that `botman` does not run any commands. It does not have the ability to _do_ anything, as having some automated llm control your terminal couldn't possibly lead to anything good. It only shows you the command.
+Note that `botman` does not run any commands. It does not have the ability to _do_ anything, as having some automated LLM control your terminal couldn't possibly lead to anything good. So `botman` simply shows you the output.
 
 ## Install from source
 
@@ -49,9 +49,13 @@ botman
 botman -i "How many bees in a bonnet?"
 ```
 
-# Data privacy
+## Data privacy
 
 `botman` talks directly to the OpenAi API. So assume that OpenAi knows about your plans to overthrow goverments and such. Other than that, botman does not reach out to any service. It currently does not store any information locally either. Tho there are plans to keep a local history for convenience.
+
+## Motivation
+
+I created it mainly for myself but thought it might be useful for others. My motivation stems from seeing some closed-source CLI-LLM integrations from companies I don't necessarily trust. So, I created something free and open source for those of us who value open source and transparency. (Yes, it does still use OpenAI's API, but I am working towards abstracting that away so it could use any LLM.)
 
 # Roadmap
 
