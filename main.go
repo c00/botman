@@ -85,7 +85,10 @@ func main() {
 	for {
 		if content != "" {
 			getResponse(content)
-			fmt.Print("\n\n")
+
+			if *interactiveFlag {
+				fmt.Print("\n\n")
+			}
 		}
 
 		if *interactiveFlag {

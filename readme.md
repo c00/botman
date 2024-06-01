@@ -12,6 +12,9 @@ Botman lets you talk to an LLM. Currently only openAi GPT 4 turbo It is optimize
 ## Examples
 
 ```bash
+# Open a new interactive chat.
+botman
+
 # Use an argument as input.
 botman "tell me a joke about the golang gopher"
 botman "git command for undoing last commit"
@@ -29,13 +32,15 @@ cat deployment.yaml | botman "how many replicas will this run?"
 
 ## Interactive mode
 
-Use interactive mode by giving the `-i` flag.
+By not supplying any arguments or stdin, botman will run in interactive mode.
+
+Use interactive mode explicitly by giving the `-i` flag.
 
 In interactive mode, the program does not exit after a response, but instead waits for your input.
 
 ```bash
 # Start interactive mode without an initial prompt
-botman -i
+botman
 
 # Start interactive mode with arguments
 botman -i How many bees in a bonnet?
