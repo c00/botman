@@ -13,7 +13,7 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
-const version = "1.0.2"
+const version = "1.0.3"
 
 var messages []openai.ChatCompletionMessage = []openai.ChatCompletionMessage{
 	{
@@ -77,16 +77,15 @@ func main() {
 
 	content := strings.TrimSpace(fmt.Sprintf("%v %v", in, arg))
 
-	if content == "" && !*interactiveFlag {
-		fmt.Print("No input in stdin, nor as an argument.\n\n")
-		printHelp()
-		os.Exit(0)
+	if content == "" {
+		*interactiveFlag = true
 	}
 
 	//Main program loop
 	for {
 		if content != "" {
 			getResponse(content)
+			fmt.Print("\n\n")
 		}
 
 		if *interactiveFlag {
@@ -105,7 +104,7 @@ func main() {
 func getCliInput() string {
 	//Wait for an enter
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("\n\nYou: ")
+	fmt.Print("You: ")
 	text, _ := reader.ReadString('\n')
 
 	if text == "\n" {
