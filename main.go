@@ -16,7 +16,7 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
-const version = "1.0.3"
+const version = "1.0.4"
 
 var messages []models.ChatMessage = []models.ChatMessage{
 	{
