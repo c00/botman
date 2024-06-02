@@ -10,17 +10,22 @@ import (
 	"os"
 	"strings"
 
+	"github.com/c00/botman/config"
+	"github.com/c00/botman/history"
+	"github.com/c00/botman/models"
 	openai "github.com/sashabaranov/go-openai"
 )
 
 const version = "1.0.3"
 
-var messages []openai.ChatCompletionMessage = []openai.ChatCompletionMessage{
+var messages []models.ChatMessage = []models.ChatMessage{
 	{
 		Role:    openai.ChatMessageRoleSystem,
 		Content: "Be concise. If code or a cli command is asked, only return the code or command. Do not add code block backticks. Output in plain text",
 	},
 }
+
+var appConfig config.AppConfig
 
 func getPipedIn() string {
 	info, err := os.Stdin.Stat()
@@ -44,33 +49,34 @@ func getPipedIn() string {
 }
 
 func getArg() string {
-	first := true
-	relevant := []string{}
-	for _, a := range os.Args {
-		if first {
-			first = false
-			continue
-		}
-
-		if strings.HasPrefix(a, "-") {
-			continue
-		}
-
-		relevant = append(relevant, a)
-	}
-
-	return strings.Join(relevant, " ")
+	return strings.Join(flag.Args(), " ")
 }
 
 func main() {
 	helpFlag := flag.Bool("h", false, "Display help information")
 	interactiveFlag := flag.Bool("i", false, "Interactive mode")
+	historyFlag := flag.Int("history", -1, "Show historical chat, looking back x chats")
+	printLast := flag.Bool("l", false, "Print the last response")
 
 	flag.Parse()
+	//Print help
 	if *helpFlag {
 		printHelp()
 		os.Exit(0)
 	}
+
+	//Print chat from history
+	if *historyFlag >= 0 {
+		printChat(*historyFlag)
+		os.Exit(0)
+	}
+
+	if *printLast {
+		printLastResponse()
+		os.Exit(0)
+	}
+
+	appConfig = config.LoadFromUser()
 
 	in := getPipedIn()
 	arg := getArg()
@@ -102,6 +108,13 @@ func main() {
 	}
 
 	fmt.Println()
+
+	if appConfig.SaveHistory {
+		_, err := history.SaveChat(messages)
+		if err != nil {
+			fmt.Println("could not save chat history:", err)
+		}
+	}
 }
 
 func getCliInput() string {
@@ -120,17 +133,17 @@ func getCliInput() string {
 }
 
 func getResponse(content string) {
-	messages = append(messages, openai.ChatCompletionMessage{
+	messages = append(messages, models.ChatMessage{
 		Role:    openai.ChatMessageRoleUser,
 		Content: content,
 	})
 
-	client := openai.NewClient(os.Getenv("OPENAI_API_KEY"))
+	client := openai.NewClient(appConfig.OpenAiKey)
 	stream, err := client.CreateChatCompletionStream(
 		context.Background(),
 		openai.ChatCompletionRequest{
 			Model:    openai.GPT4o,
-			Messages: messages,
+			Messages: MessagesToOpenAiMessages(messages),
 		},
 	)
 
@@ -146,7 +159,7 @@ func getResponse(content string) {
 		response, err := stream.Recv()
 		if errors.Is(err, io.EOF) {
 			responseMessage := strings.Join(responseContent, "")
-			messages = append(messages, openai.ChatCompletionMessage{
+			messages = append(messages, models.ChatMessage{
 				Role:    openai.ChatMessageRoleAssistant,
 				Content: responseMessage,
 			})
