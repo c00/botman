@@ -8,7 +8,7 @@ Note that `botman` does not run any commands. It does not have the ability to _d
 
 1. Clone the repo
 2. Run `go install .`
-3. Add environment variable `OPENAI_API_KEY` with your api key. e.g. `echo 'export OPENAI_API_KEY="yourapikey"' >> ~/.bashrc`
+3. Run `botman --init` to set the OpenAI API key. (If available it will read the key from the environment variable `OPENAI_API_KEY`)
 4. (optional) Create an alias in your shell. e.g. `echo 'alias bot="botman"' >> ~/.bashrc`
 5. Test that it works by running `botman "say hi"` or `bot "say hi"`
 
@@ -29,6 +29,18 @@ echo Quote a Bob Kelso joke | botman
 # Use both
 ls -al | botman "Which files are hidden?"
 cat deployment.yaml | botman "how many replicas will this run?"
+
+# Print the last received response
+botman -l
+
+# Pipe the last response into bash (at your own risk)
+botman -l | bash
+
+# Show the last conversation
+botman --history 0
+
+# Show the next-to-last conversation
+botman --history 1
 ```
 
 ![demo](https://github.com/c00/botman/blob/main/assets/botman-demo.gif?raw=true)
@@ -51,7 +63,7 @@ botman -i "How many bees in a bonnet?"
 
 ## Data privacy
 
-`botman` talks directly to the OpenAi API. So assume that OpenAi knows about your plans to overthrow goverments and such. Other than that, botman does not reach out to any service. It currently does not store any information locally either. Tho there are plans to keep a local history for convenience.
+`botman` talks directly to the OpenAi API. So assume that OpenAi knows about your plans to overthrow goverments and such. Other than that, botman does not reach out to any service. It does store your chat history locally in `~/.botman/history`. You can disable this in the settings file `~/.botman/config.yaml` by setting `saveHistory` to false.
 
 ## Motivation
 
@@ -61,6 +73,6 @@ I created it mainly for myself but thought it might be useful for others. My mot
 
 I'm adding features as I feel they're useful. I'm open to suggestions and outside contributions. The aim is to be simple, non-intrusive and transparent about data.
 
-- [ ] History - Store conversation history locally in text files so users can continue older conversations and replay earlier responses.
+- [x] History - Store conversation history locally in text files so users can continue older conversations and replay earlier responses.
 - [ ] LLM agnostic - Make botman able to work with any LLM by abstracting the interface to the LLM.
 - [ ] Ability to execute or at least copy to clipboard the last printed command.

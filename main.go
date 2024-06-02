@@ -16,7 +16,7 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
-const version = "1.0.4"
+const version = "1.0.5"
 
 var messages []models.ChatMessage = []models.ChatMessage{
 	{
@@ -57,11 +57,19 @@ func main() {
 	interactiveFlag := flag.Bool("i", false, "Interactive mode")
 	historyFlag := flag.Int("history", -1, "Show historical chat, looking back x chats")
 	printLast := flag.Bool("l", false, "Print the last response")
+	initFlag := flag.Bool("init", false, "Initialise the configuration and set the OpenAI API Key")
+
+	appConfig = config.LoadFromUser()
 
 	flag.Parse()
 	//Print help
 	if *helpFlag {
 		printHelp()
+		os.Exit(0)
+	}
+
+	if *initFlag {
+		setupConfig()
 		os.Exit(0)
 	}
 
@@ -75,8 +83,6 @@ func main() {
 		printLastResponse()
 		os.Exit(0)
 	}
-
-	appConfig = config.LoadFromUser()
 
 	in := getPipedIn()
 	arg := getArg()
