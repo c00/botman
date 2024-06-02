@@ -4,6 +4,8 @@
 
 Note that `botman` does not run any commands. It does not have the ability to _do_ anything, as having some automated LLM control your terminal couldn't possibly lead to anything good. So `botman` simply shows you the output.
 
+You can pipe the output of the last received response to any other shell command, e.g. `botman -l | bash`. Use this at your own risk.
+
 ## Install from source
 
 1. Clone the repo
@@ -36,11 +38,17 @@ botman -l
 # Pipe the last response into bash (at your own risk)
 botman -l | bash
 
+# Pipe the last response into a file
+botman -l >> some-file.go
+
 # Show the last conversation
 botman --history 0
 
 # Show the next-to-last conversation
 botman --history 1
+
+# Set the OpenAI API key
+botman --init
 ```
 
 ![demo](https://github.com/c00/botman/blob/main/assets/botman-demo.gif?raw=true)
@@ -63,7 +71,7 @@ botman -i "How many bees in a bonnet?"
 
 ## Data privacy
 
-`botman` talks directly to the OpenAi API. So assume that OpenAi knows about your plans to overthrow goverments and such. Other than that, botman does not reach out to any service. It does store your chat history locally in `~/.botman/history`. You can disable this in the settings file `~/.botman/config.yaml` by setting `saveHistory` to false.
+`botman` talks directly to the OpenAi API. So assume that OpenAi knows about your plans to overthrow goverments and such. Other than that, botman does not reach out to any service. It does store your chat history locally in `~/.botman/history`. You can disable this in the settings file `~/.botman/config.yaml` by setting `saveHistory` to `false`.
 
 ## Motivation
 
@@ -73,6 +81,4 @@ I created it mainly for myself but thought it might be useful for others. My mot
 
 I'm adding features as I feel they're useful. I'm open to suggestions and outside contributions. The aim is to be simple, non-intrusive and transparent about data.
 
-- [x] History - Store conversation history locally in text files so users can continue older conversations and replay earlier responses.
 - [ ] LLM agnostic - Make botman able to work with any LLM by abstracting the interface to the LLM.
-- [ ] Ability to execute or at least copy to clipboard the last printed command.
