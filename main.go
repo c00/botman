@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/c00/botman/config"
 	"github.com/c00/botman/history"
@@ -16,12 +17,12 @@ import (
 	openai "github.com/sashabaranov/go-openai"
 )
 
-const version = "1.0.5"
+const version = "1.0.6"
 
 var messages []models.ChatMessage = []models.ChatMessage{
 	{
 		Role:    openai.ChatMessageRoleSystem,
-		Content: "Be concise. If code or a cli command is asked, only return the code or command. Do not add code block backticks. Output in plain text",
+		Content: fmt.Sprintf("The current date and time is %v. Be concise. If code or a cli command is asked, only return the code or command. Do not add code block backticks. Output in plain text", time.Now().Format(time.RFC1123Z)),
 	},
 }
 
