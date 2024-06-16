@@ -8,22 +8,30 @@ import (
 	"os"
 	"strings"
 
+	"github.com/c00/botman/config"
 	"github.com/c00/botman/models"
 	openai "github.com/sashabaranov/go-openai"
 )
 
-func NewChatBot(apiKey string) Chatbot {
+func NewChatBot(cfg config.OpenAiConfig) Chatbot {
 	return Chatbot{
-		client: openai.NewClient(apiKey),
+		client: openai.NewClient(cfg.ApiKey),
+		cfg:    cfg,
 	}
 }
 
 type Chatbot struct {
 	client *openai.Client
+	cfg    config.OpenAiConfig
 }
 
 func (c Chatbot) GetResponse(messages []models.ChatMessage, streamChan chan<- string) string {
 	defer close(streamChan)
+
+	//Set system prompt if there's only 2 messages, and the first one is a system prompt
+	if len(messages) == 2 && messages[0].Role == models.ChatMessageRoleSystem && c.cfg.SystemPrompt != "" {
+		messages[0].Content += " " + c.cfg.SystemPrompt
+	}
 
 	stream, err := c.client.CreateChatCompletionStream(
 		context.Background(),

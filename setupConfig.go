@@ -17,7 +17,7 @@ func setupConfig() {
 	if appConfig.OpenAiKey == "" {
 		fmt.Println("There is currently no OpenAI API key set")
 	} else {
-		fmt.Println("Current OpenAI API key:", appConfig.OpenAiKey)
+		fmt.Println("Current OpenAI API key:", appConfig.OpenAi.ApiKey)
 	}
 
 	fmt.Print("Enter your (new) OpenAi API key: ")
@@ -40,7 +40,7 @@ func setupConfig() {
 		return
 	}
 
-	appConfig.OpenAiKey = newKey
+	appConfig.OpenAi.ApiKey = newKey
 	err := config.SaveForUser(appConfig)
 	if err != nil {
 		fmt.Println("could not update the configuration:", err)

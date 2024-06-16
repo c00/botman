@@ -139,7 +139,7 @@ func getCliInput() string {
 
 func getChatter() models.Chatter {
 	if appConfig.LlmProvider == config.LlmProviderOpenAi {
-		return openai.NewChatBot(appConfig.OpenAiKey)
+		return openai.NewChatBot(appConfig.OpenAi)
 	}
 
 	panic(fmt.Sprintf("chatter '%v' not implemented", appConfig.LlmProvider))

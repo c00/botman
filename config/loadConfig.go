@@ -12,9 +12,12 @@ import (
 func NewAppConfig() AppConfig {
 	openAiKey := os.Getenv("OPENAI_API_KEY")
 	return AppConfig{
-		OpenAiKey:   openAiKey,
+		Version:     0,
 		SaveHistory: true,
 		LlmProvider: LlmProviderOpenAi,
+		OpenAi: OpenAiConfig{
+			ApiKey: openAiKey,
+		},
 	}
 }
 
@@ -72,6 +75,12 @@ func LoadFromUser() AppConfig {
 	if err != nil {
 		fmt.Println("Could not read config from user:", err)
 		os.Exit(1)
+	}
+
+	//Update to latest version
+	config, shouldSave := updateConfig(config)
+	if shouldSave {
+		SaveForUser(config)
 	}
 
 	return config
