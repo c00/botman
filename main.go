@@ -2,8 +2,6 @@ package main
 
 import (
 	"bufio"
-	"context"
-	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -14,14 +12,14 @@ import (
 	"github.com/c00/botman/config"
 	"github.com/c00/botman/history"
 	"github.com/c00/botman/models"
-	openai "github.com/sashabaranov/go-openai"
+	"github.com/c00/botman/openai"
 )
 
-const version = "1.0.6"
+const version = "1.1.0"
 
 var messages []models.ChatMessage = []models.ChatMessage{
 	{
-		Role:    openai.ChatMessageRoleSystem,
+		Role:    models.ChatMessageRoleSystem,
 		Content: fmt.Sprintf("The current date and time is %v. Be concise. If code or a cli command is asked, only return the code or command. Do not add code block backticks. Output in plain text", time.Now().Format(time.RFC1123Z)),
 	},
 }
@@ -139,47 +137,37 @@ func getCliInput() string {
 	return text
 }
 
+func getChatter() models.Chatter {
+	if appConfig.LlmProvider == config.LlmProviderOpenAi {
+		return openai.NewChatBot(appConfig.OpenAiKey)
+	}
+
+	panic(fmt.Sprintf("chatter '%v' not implemented", appConfig.LlmProvider))
+}
+
 func getResponse(content string) {
 	messages = append(messages, models.ChatMessage{
-		Role:    openai.ChatMessageRoleUser,
+		Role:    models.ChatMessageRoleUser,
 		Content: content,
 	})
 
-	client := openai.NewClient(appConfig.OpenAiKey)
-	stream, err := client.CreateChatCompletionStream(
-		context.Background(),
-		openai.ChatCompletionRequest{
-			Model:    openai.GPT4o,
-			Messages: MessagesToOpenAiMessages(messages),
-		},
-	)
+	//Instantiate chatter
+	chatter := getChatter()
+	ch := make(chan string)
 
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "Error getting Chat Completion:", err)
-		os.Exit(1)
-	}
-	defer stream.Close()
-
-	responseContent := make([]string, 0, 50)
-
-	for {
-		response, err := stream.Recv()
-		if errors.Is(err, io.EOF) {
-			responseMessage := strings.Join(responseContent, "")
-			messages = append(messages, models.ChatMessage{
-				Role:    openai.ChatMessageRoleAssistant,
-				Content: responseMessage,
-			})
-			return
+	//Let the channel stream to stdout
+	go func(ch chan string) {
+		for content := range ch {
+			fmt.Print(content)
 		}
+	}(ch)
 
-		if err != nil {
-			fmt.Fprintln(os.Stderr, "Stream error:", err)
-			os.Exit(1)
-		}
+	//call GetResponse
+	response := chatter.GetResponse(messages, ch)
 
-		fmt.Print(response.Choices[0].Delta.Content)
-		responseContent = append(responseContent, response.Choices[0].Delta.Content)
-	}
-
+	//Add the response message to the message slice
+	messages = append(messages, models.ChatMessage{
+		Role:    models.ChatMessageRoleAssistant,
+		Content: response,
+	})
 }

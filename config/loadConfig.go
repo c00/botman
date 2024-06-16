@@ -14,6 +14,7 @@ func NewAppConfig() AppConfig {
 	return AppConfig{
 		OpenAiKey:   openAiKey,
 		SaveHistory: true,
+		LlmProvider: LlmProviderOpenAi,
 	}
 }
 
@@ -82,7 +83,7 @@ func Load(path string) (AppConfig, error) {
 		return AppConfig{}, err
 	}
 
-	config := AppConfig{}
+	config := NewAppConfig()
 	err = yaml.Unmarshal(bytes, &config)
 	if err != nil {
 		return AppConfig{}, err
