@@ -36,7 +36,7 @@ func (c Chatbot) GetResponse(messages []models.ChatMessage, streamChan chan<- st
 	stream, err := c.client.CreateChatCompletionStream(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model:    openai.GPT4o,
+			Model:    c.cfg.Model,
 			Messages: messagesToOpenAiMessages(messages),
 		},
 	)

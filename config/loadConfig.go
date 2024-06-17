@@ -17,6 +17,7 @@ func NewAppConfig() AppConfig {
 		LlmProvider: LlmProviderOpenAi,
 		OpenAi: OpenAiConfig{
 			ApiKey: openAiKey,
+			Model:  "gpt-4o",
 		},
 	}
 }

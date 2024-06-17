@@ -81,7 +81,7 @@ I created it mainly for myself but thought it might be useful for others. My mot
 
 I'm adding features as I feel they're useful. I'm open to suggestions and outside contributions. The aim is to be simple, non-intrusive and transparent about data.
 
-- [ ] LLM agnostic - Make botman able to work with any LLM by abstracting the interface to the LLM.
+- [x] LLM agnostic - Make botman able to work with any LLM by abstracting the interface to the LLM.
 - [ ] Add Fireworks AI integration
 - [ ] Add Claude integration
 - [ ] Add generic Funciton calling - Make it so it can function regardless of underlying model
