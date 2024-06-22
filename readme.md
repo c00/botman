@@ -8,15 +8,13 @@ You can pipe the output of the last received response to any other shell command
 
 ## Supported LLMs
 
-Currently `botman` can use OpenAi and FireworksAi. More will soon come. Currently supported models:
-
--
+Currently `botman` can use OpenAi and FireworksAi. More will soon come. Currently supported models can be found [here](models/LlmModels.go).
 
 ## Install from source
 
 1. Clone the repo
 2. Run `go install .`
-3. Run `botman --init` to set the OpenAI API key. (If available it will read the key from the environment variable `OPENAI_API_KEY`)
+3. Run `botman --init` to setup the config.
 4. (optional) Create an alias in your shell. e.g. `echo 'alias bot="botman"' >> ~/.bashrc`
 5. Test that it works by running `botman "say hi"` or `bot "say hi"`
 
@@ -88,12 +86,11 @@ I created it mainly for myself but thought it might be useful for others. My mot
 I'm adding features as I feel they're useful. I'm open to suggestions and outside contributions. The aim is to be simple, non-intrusive and transparent about data.
 
 - [x] LLM agnostic - Make botman able to work with any LLM by abstracting the interface to the LLM.
-- [ ] Add Fireworks AI integration (add documentation and setup)
+- [x] Add Fireworks AI integration
 - [ ] Add Claude integration
 - [ ] Add generic Function calling - Make it so it can function regardless of underlying model (Add switch-model as a function)
-- [ ] Add Image Generation for SDXL
+- [ ] Add Image Generation for SDXL through FireworksAi
 - [ ] Add Image Generation for OpenAi
-- [ ] Maybe replace OpenAI dependency for simple HTTP calls?
 - [ ] Replace flags with cobra
 - [ ] Easy way to switch between models / providers. Create profiles?
 - [ ] Add a terminal emulater (tcell, bubbletea, readline, ???)

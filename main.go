@@ -16,7 +16,7 @@ import (
 	"github.com/c00/botman/openai"
 )
 
-const version = "1.1.0"
+const version = "1.1.1"
 
 var messages []models.ChatMessage = []models.ChatMessage{
 	{
