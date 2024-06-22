@@ -15,6 +15,9 @@ Botman lets you talk to an LLM. It is optimized for use in the terminal. It acce
 Options:
 	-h            Show this help message and exit
 	-i            Interactive mode. Keep interacting to continue the conversation.
+	-l						Print last response
+	--history n		Show n-last conversation. 0 = most recent conversation.
+	--init 				Set API keys and preferred LLM provider / model
 	
 PROMPT: Any text prompt to ask the LLM.
 

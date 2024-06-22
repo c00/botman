@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bufio"
 	"flag"
 	"fmt"
 	"io"
@@ -9,6 +8,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/c00/botman/cli"
 	"github.com/c00/botman/config"
 	"github.com/c00/botman/fireworks"
 	"github.com/c00/botman/history"
@@ -25,6 +25,7 @@ var messages []models.ChatMessage = []models.ChatMessage{
 	},
 }
 
+var date = time.Now()
 var appConfig config.AppConfig
 
 func getPipedIn() string {
@@ -57,7 +58,7 @@ func main() {
 	interactiveFlag := flag.Bool("i", false, "Interactive mode")
 	historyFlag := flag.Int("history", -1, "Show historical chat, looking back x chats")
 	printLast := flag.Bool("l", false, "Print the last response")
-	initFlag := flag.Bool("init", false, "Initialise the configuration and set the OpenAI API Key")
+	initFlag := flag.Bool("init", false, "Initialise or update the configuration and set API keys")
 
 	appConfig = config.LoadFromUser()
 
@@ -98,13 +99,21 @@ func main() {
 		if content != "" {
 			getResponse(content)
 
+			//Save history after every response so we dont' miss out if we ctrl+c out on the prompt.
+			if appConfig.SaveHistory {
+				_, err := history.SaveChat(date, messages)
+				if err != nil {
+					fmt.Println("could not save chat history:", err)
+				}
+			}
+
 			if *interactiveFlag {
 				fmt.Print("\n\n")
 			}
 		}
 
 		if *interactiveFlag {
-			content = getCliInput()
+			content = cli.GetInput("You")
 			if content == "" {
 				break
 			}
@@ -114,28 +123,6 @@ func main() {
 	}
 
 	fmt.Println()
-
-	if appConfig.SaveHistory {
-		_, err := history.SaveChat(messages)
-		if err != nil {
-			fmt.Println("could not save chat history:", err)
-		}
-	}
-}
-
-func getCliInput() string {
-	//Wait for an enter
-	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("You: ")
-	text, _ := reader.ReadString('\n')
-
-	if text == "\n" {
-		return ""
-	}
-
-	fmt.Println()
-
-	return text
 }
 
 func getChatter() models.Chatter {

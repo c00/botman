@@ -57,7 +57,8 @@ func TestSaveChat(t *testing.T) {
 		{Role: "test role", Content: "test message"},
 	}
 
-	entry, err := SaveChat(messages)
+	date := time.Now()
+	entry, err := SaveChat(date, messages)
 
 	if err != nil {
 		t.Fatal("Nothing was saved", err)

@@ -14,11 +14,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func SaveChat(messages []models.ChatMessage) (models.HistoryEntry, error) {
+func SaveChat(date time.Time, messages []models.ChatMessage) (models.HistoryEntry, error) {
 	//Convert the things to a history entry
 	entry := models.HistoryEntry{
-		Name:     fmt.Sprintf("%v.yaml", time.Now().Format(time.RFC3339)),
-		Date:     time.Now(),
+		Name:     fmt.Sprintf("%v.yaml", date.Format(time.RFC3339)),
+		Date:     date,
 		Messages: messages,
 	}
 

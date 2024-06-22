@@ -1,10 +1,16 @@
 # botman
 
-`botman` lets you talk to an LLM. Currently it uses openAI ChatGPT-4o. It is optimized for use in the terminal. You can use `stdin` or an argument for input, outputs content to `stdout` and errors to `stderr`.
+`botman` lets you talk to an LLM. It is optimized for use in the terminal. You can use `stdin` or an argument for input, outputs content to `stdout` and errors to `stderr`.
 
 Note that `botman` does not run any commands. It does not have the ability to _do_ anything, as having some automated LLM control your terminal couldn't possibly lead to anything good. So `botman` simply shows you the output.
 
 You can pipe the output of the last received response to any other shell command, e.g. `botman -l | bash`. Use this at your own risk.
+
+## Supported LLMs
+
+Currently `botman` can use OpenAi and FireworksAi. More will soon come. Currently supported models:
+
+-
 
 ## Install from source
 
@@ -82,9 +88,16 @@ I created it mainly for myself but thought it might be useful for others. My mot
 I'm adding features as I feel they're useful. I'm open to suggestions and outside contributions. The aim is to be simple, non-intrusive and transparent about data.
 
 - [x] LLM agnostic - Make botman able to work with any LLM by abstracting the interface to the LLM.
-- [ ] Add Fireworks AI integration
+- [ ] Add Fireworks AI integration (add documentation and setup)
 - [ ] Add Claude integration
-- [ ] Add generic Funciton calling - Make it so it can function regardless of underlying model
+- [ ] Add generic Function calling - Make it so it can function regardless of underlying model (Add switch-model as a function)
 - [ ] Add Image Generation for SDXL
 - [ ] Add Image Generation for OpenAi
-- [ ] Maybe replave OpenAI dependency for simple HTTP calls?
+- [ ] Maybe replace OpenAI dependency for simple HTTP calls?
+- [ ] Replace flags with cobra
+- [ ] Easy way to switch between models / providers. Create profiles?
+- [ ] Add a terminal emulater (tcell, bubbletea, readline, ???)
+- [ ] Make setup nice somehow, or just write the config file and open it in an editor? Or just output the path.
+- [ ] Auto cleanup old conversations
+- [ ] Search in old conversation
+- [ ] Continue conversations
