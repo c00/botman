@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/c00/botman/cli"
@@ -145,11 +146,15 @@ func getResponse(content string) {
 	chatter := getChatter()
 	ch := make(chan string)
 
+	wg := sync.WaitGroup{}
+	wg.Add(1)
+
 	//Let the channel stream to stdout
 	go func(ch chan string) {
 		for content := range ch {
 			fmt.Print(content)
 		}
+		wg.Done()
 	}(ch)
 
 	//call GetResponse
@@ -160,4 +165,6 @@ func getResponse(content string) {
 		Role:    models.ChatMessageRoleAssistant,
 		Content: response,
 	})
+
+	wg.Wait()
 }
