@@ -9,16 +9,14 @@ import (
 	"sync"
 	"time"
 
+	"github.com/c00/botman/botman"
 	"github.com/c00/botman/cli"
 	"github.com/c00/botman/config"
 	"github.com/c00/botman/history"
 	"github.com/c00/botman/models"
-	"github.com/c00/botman/providers/claude"
-	"github.com/c00/botman/providers/fireworks"
-	"github.com/c00/botman/providers/openai"
 )
 
-const version = "1.1.2"
+const version = "1.1.3"
 
 var messages []models.ChatMessage = []models.ChatMessage{
 	{
@@ -28,7 +26,7 @@ var messages []models.ChatMessage = []models.ChatMessage{
 }
 
 var date = time.Now()
-var appConfig config.AppConfig
+var appConfig config.BotmanConfig
 
 func getPipedIn() string {
 	info, err := os.Stdin.Stat()
@@ -127,18 +125,6 @@ func main() {
 	fmt.Println()
 }
 
-func getChatter() models.Chatter {
-	if appConfig.LlmProvider == config.LlmProviderOpenAi {
-		return openai.NewChatBot(appConfig.OpenAi)
-	} else if appConfig.LlmProvider == config.LlmProviderFireworksAi {
-		return fireworks.NewChatBot(appConfig.FireworksAi)
-	} else if appConfig.LlmProvider == config.LlmProviderClaude {
-		return claude.NewChatBot(appConfig.Claude)
-	}
-
-	panic(fmt.Sprintf("chatter '%v' not implemented", appConfig.LlmProvider))
-}
-
 func getResponse(content string) {
 	messages = append(messages, models.ChatMessage{
 		Role:    models.ChatMessageRoleUser,
@@ -146,7 +132,7 @@ func getResponse(content string) {
 	})
 
 	//Instantiate chatter
-	chatter := getChatter()
+	chatter := botman.GetChatter(appConfig)
 	ch := make(chan string)
 
 	wg := sync.WaitGroup{}

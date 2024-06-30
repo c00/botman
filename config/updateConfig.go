@@ -1,14 +1,14 @@
 package config
 
-func updateConfig(cfg AppConfig) (AppConfig, bool) {
+func updateConfig(cfg BotmanConfig) (BotmanConfig, bool) {
 	if cfg.Version == currentVersion {
 		return cfg, false
 	}
 
 	//This is a slice of update functions to update the appConfig to the latest version.
-	updaters := []func(AppConfig) AppConfig{
+	updaters := []func(BotmanConfig) BotmanConfig{
 		//0 - openAi got its own config.
-		func(cfg AppConfig) AppConfig {
+		func(cfg BotmanConfig) BotmanConfig {
 			cfg.OpenAi = OpenAiConfig{
 				ApiKey:       cfg.OpenAiKey,
 				SystemPrompt: "",

@@ -3,7 +3,7 @@ package config
 import "testing"
 
 func TestUpdateConfig(t *testing.T) {
-	config := AppConfig{
+	config := BotmanConfig{
 		OpenAiKey: "12345",
 	}
 

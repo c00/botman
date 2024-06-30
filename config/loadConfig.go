@@ -9,9 +9,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-func NewAppConfig() AppConfig {
+func NewAppConfig() BotmanConfig {
 	openAiKey := os.Getenv("OPENAI_API_KEY")
-	return AppConfig{
+	return BotmanConfig{
 		Version:     0,
 		SaveHistory: true,
 		LlmProvider: LlmProviderOpenAi,
@@ -22,7 +22,7 @@ func NewAppConfig() AppConfig {
 	}
 }
 
-func SaveForUser(config AppConfig) error {
+func SaveForUser(config BotmanConfig) error {
 	u, err := user.Current()
 	if err != nil {
 		return err
@@ -55,7 +55,7 @@ func SaveForUser(config AppConfig) error {
 	return nil
 }
 
-func LoadFromUser() AppConfig {
+func LoadFromUser() BotmanConfig {
 	u, err := user.Current()
 	if err != nil {
 		fmt.Println("Could not load config from user:", err)
@@ -87,16 +87,16 @@ func LoadFromUser() AppConfig {
 	return config
 }
 
-func Load(path string) (AppConfig, error) {
+func Load(path string) (BotmanConfig, error) {
 	bytes, err := os.ReadFile(path)
 	if err != nil {
-		return AppConfig{}, err
+		return BotmanConfig{}, err
 	}
 
 	config := NewAppConfig()
 	err = yaml.Unmarshal(bytes, &config)
 	if err != nil {
-		return AppConfig{}, err
+		return BotmanConfig{}, err
 	}
 
 	return config, nil

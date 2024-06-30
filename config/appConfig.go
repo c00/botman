@@ -7,7 +7,7 @@ const LlmProviderClaude = "claude"
 // To keep track of breaking changes in the config file
 const currentVersion = 1
 
-type AppConfig struct {
+type BotmanConfig struct {
 	Version     int             `yaml:"version"`
 	OpenAiKey   string          `yaml:"openAiKey,omitempty"` //Deprecated, use OpenAi.ApiKey instead
 	SaveHistory bool            `yaml:"saveHistory"`
