@@ -8,7 +8,14 @@ You can pipe the output of the last received response to any other shell command
 
 ## Supported LLMs
 
-Currently `botman` can use OpenAi and FireworksAi. More will soon come. Currently supported models can be found [here](models/LlmModels.go).
+Currently `botman` can use OpenAi, Claude and FireworksAi. This includes:
+
+- GPT 4o
+- Claude 3.5 sonnet
+- Llama 3 8B / 70B
+- Mixtral 7B / 22B
+
+[Here is a complete list all supported models](models/LlmModels.go).
 
 ## Install from source
 
@@ -51,7 +58,7 @@ botman --history 0
 # Show the next-to-last conversation
 botman --history 1
 
-# Set the OpenAI API key
+# Change model and/or set API keys
 botman --init
 ```
 
@@ -87,14 +94,12 @@ I'm adding features as I feel they're useful. I'm open to suggestions and outsid
 
 - [x] LLM agnostic - Make botman able to work with any LLM by abstracting the interface to the LLM.
 - [x] Add Fireworks AI integration
-- [ ] Add Claude integration
+- [x] Add Claude integration
 - [ ] Add generic Function calling - Make it so it can function regardless of underlying model (Add switch-model as a function)
 - [ ] Add Image Generation for SDXL through FireworksAi
 - [ ] Add Image Generation for OpenAi
 - [ ] Replace flags with cobra
-- [ ] Easy way to switch between models / providers. Create profiles?
-- [ ] Add a terminal emulater (tcell, bubbletea, readline, ???)
-- [ ] Make setup nice somehow, or just write the config file and open it in an editor? Or just output the path.
+- [ ] Add a terminal emulator (tcell, bubbletea, readline, ???)
 - [ ] Auto cleanup old conversations
 - [ ] Search in old conversation
 - [ ] Continue conversations
