@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/c00/botman/claude"
 	"github.com/c00/botman/cli"
 	"github.com/c00/botman/config"
 	"github.com/c00/botman/fireworks"
@@ -131,6 +132,8 @@ func getChatter() models.Chatter {
 		return openai.NewChatBot(appConfig.OpenAi)
 	} else if appConfig.LlmProvider == config.LlmProviderFireworksAi {
 		return fireworks.NewChatBot(appConfig.FireworksAi)
+	} else if appConfig.LlmProvider == config.LlmProviderClaude {
+		return claude.NewChatBot(appConfig.Claude)
 	}
 
 	panic(fmt.Sprintf("chatter '%v' not implemented", appConfig.LlmProvider))

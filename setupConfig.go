@@ -17,8 +17,11 @@ func setupConfig() {
 	currentChoiceIndex := 0
 	if appConfig.LlmProvider == config.LlmProviderFireworksAi {
 		currentChoiceIndex = 1
+	} else if appConfig.LlmProvider == config.LlmProviderClaude {
+		currentChoiceIndex = 2
 	}
-	choice := cli.GetChoice([]string{"Open AI", "Fireworks AI"}, currentChoiceIndex)
+
+	choice := cli.GetChoice([]string{"Open AI", "Fireworks AI", "Claude"}, currentChoiceIndex)
 	if choice == 0 {
 		appConfig.LlmProvider = config.LlmProviderOpenAi
 		setupApiKey(&appConfig.OpenAi.ApiKey, "OpenAI")
@@ -27,6 +30,15 @@ func setupConfig() {
 		appConfig.LlmProvider = config.LlmProviderFireworksAi
 		setupApiKey(&appConfig.FireworksAi.ApiKey, "Fireworks AI")
 		chooseModel(&appConfig.FireworksAi.Model, models.FireworksAIModels)
+	} else if choice == 2 {
+		appConfig.LlmProvider = config.LlmProviderClaude
+		setupApiKey(&appConfig.Claude.ApiKey, "Claude")
+		chooseModel(&appConfig.Claude.Model, models.ClaudeModels)
+
+		// Set defaults
+		if appConfig.Claude.MaxTokens == 0 {
+			appConfig.Claude.MaxTokens = 1024
+		}
 	}
 
 	fmt.Println()

@@ -12,3 +12,10 @@ var FireworksAIModels = []string{
 	"accounts/fireworks/models/mixtral-8x7b-instruct-hf",
 	"accounts/fireworks/models/qwen2-72b-instruct",
 }
+
+var ClaudeModels = []string{
+	"claude-3-5-sonnet-20240620",
+	"claude-3-opus-20240229",
+	"claude-3-sonnet-20240229",
+	"claude-3-haiku-20240307",
+}
