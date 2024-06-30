@@ -9,13 +9,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/c00/botman/claude"
 	"github.com/c00/botman/cli"
 	"github.com/c00/botman/config"
-	"github.com/c00/botman/fireworks"
 	"github.com/c00/botman/history"
 	"github.com/c00/botman/models"
-	"github.com/c00/botman/openai"
+	"github.com/c00/botman/providers/claude"
+	"github.com/c00/botman/providers/fireworks"
+	"github.com/c00/botman/providers/openai"
 )
 
 const version = "1.1.2"

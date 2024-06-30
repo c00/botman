@@ -1,6 +1,7 @@
 package models
 
 var OpenAiModels = []string{"gpt-4o", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"}
+
 var FireworksAIModels = []string{
 	"accounts/fireworks/models/firefunction-v2",
 	"accounts/fireworks/models/firellava-13b",
