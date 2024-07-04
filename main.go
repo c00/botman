@@ -16,12 +16,12 @@ import (
 	"github.com/c00/botman/models"
 )
 
-const version = "1.1.3"
+const version = "1.1.4"
 
 var messages []models.ChatMessage = []models.ChatMessage{
 	{
 		Role:    models.ChatMessageRoleSystem,
-		Content: fmt.Sprintf("The current date and time is %v. Be concise. If code or a cli command is asked, only return the code or command. Do not add code block backticks. Output in plain text", time.Now().Format(time.RFC1123Z)),
+		Content: "",
 	},
 }
 
@@ -61,6 +61,9 @@ func main() {
 	initFlag := flag.Bool("init", false, "Initialise or update the configuration and set API keys")
 
 	appConfig = config.LoadFromUser()
+
+	//Set System Prompt
+	messages[0].Content = fmt.Sprintf("The current date and time is %v. %v", time.Now().Format(time.RFC1123Z), appConfig.SystemPrompt)
 
 	flag.Parse()
 	//Print help

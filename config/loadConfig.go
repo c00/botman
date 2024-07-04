@@ -9,15 +9,24 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+const defaultPrompt = "Be concise. If code or a cli command is asked, only return the code or command. Do not add code block backticks. Output in plain text"
+
 func NewAppConfig() BotmanConfig {
 	openAiKey := os.Getenv("OPENAI_API_KEY")
 	return BotmanConfig{
-		Version:     0,
-		SaveHistory: true,
-		LlmProvider: LlmProviderOpenAi,
+		Version:      0,
+		SaveHistory:  true,
+		LlmProvider:  LlmProviderOpenAi,
+		SystemPrompt: defaultPrompt,
 		OpenAi: OpenAiConfig{
 			ApiKey: openAiKey,
 			Model:  "gpt-4o",
+		},
+		FireworksAi: FireworksConfig{
+			Model: "accounts/fireworks/models/mixtral-8x22b-instruct",
+		},
+		Claude: ClaudeConfig{
+			Model: "claude-3-5-sonnet-20240620",
 		},
 	}
 }
@@ -85,6 +94,52 @@ func LoadFromUser() BotmanConfig {
 	}
 
 	return config
+}
+
+func LoadFromEnv() BotmanConfig {
+	def := NewAppConfig()
+	return BotmanConfig{
+		Version:      currentVersion,
+		SaveHistory:  boolFromEnv("BOTMAN_SAVE_HISTORY", false),
+		LlmProvider:  stringFromEnv("BOTMAN_LLM", def.LlmProvider),
+		SystemPrompt: stringFromEnv("BOTMAN_PROMPT", def.SystemPrompt),
+		OpenAi: OpenAiConfig{
+			ApiKey:       stringFromEnv("BOTMAN_OPENAI_API_KEY", def.OpenAi.ApiKey),
+			Model:        stringFromEnv("BOTMAN_OPENAI_MODEL", def.OpenAi.Model),
+			SystemPrompt: stringFromEnv("BOTMAN_OPENAI_PROMPT", def.OpenAi.SystemPrompt),
+		},
+		FireworksAi: FireworksConfig{
+			ApiKey:       stringFromEnv("BOTMAN_FIREWORKS_API_KEY", def.FireworksAi.ApiKey),
+			Model:        stringFromEnv("BOTMAN_FIREWORKS_MODEL", def.FireworksAi.Model),
+			SystemPrompt: stringFromEnv("BOTMAN_FIREWORKS_PROMPT", def.FireworksAi.SystemPrompt),
+		},
+		Claude: ClaudeConfig{
+			ApiKey:       stringFromEnv("BOTMAN_CLAUDE_API_KEY", def.Claude.ApiKey),
+			Model:        stringFromEnv("BOTMAN_CLAUDE_MODEL", def.Claude.Model),
+			SystemPrompt: stringFromEnv("BOTMAN_CLAUDE_PROMPT", def.Claude.SystemPrompt),
+		},
+	}
+}
+
+func stringFromEnv(key string, fallback string) string {
+	val := os.Getenv(key)
+	if val == "" {
+		return fallback
+	}
+	return val
+}
+
+func boolFromEnv(key string, fallback bool) bool {
+	val := os.Getenv(key)
+	if val == "" {
+		return fallback
+	}
+
+	if val == "1" || val == "true" {
+		return true
+	}
+
+	return false
 }
 
 func Load(path string) (BotmanConfig, error) {

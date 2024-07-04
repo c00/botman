@@ -8,13 +8,14 @@ const LlmProviderClaude = "claude"
 const currentVersion = 1
 
 type BotmanConfig struct {
-	Version     int             `yaml:"version"`
-	OpenAiKey   string          `yaml:"openAiKey,omitempty"` //Deprecated, use OpenAi.ApiKey instead
-	SaveHistory bool            `yaml:"saveHistory"`
-	LlmProvider string          `yaml:"llmProvider"`
-	OpenAi      OpenAiConfig    `yaml:"openAi"`
-	FireworksAi FireworksConfig `yaml:"fireworksAi"`
-	Claude      ClaudeConfig    `yaml:"claude"`
+	Version      int             `yaml:"version"`
+	OpenAiKey    string          `yaml:"openAiKey,omitempty"` //Deprecated, use OpenAi.ApiKey instead
+	SaveHistory  bool            `yaml:"saveHistory"`
+	SystemPrompt string          `yaml:"systemPrompt"`
+	LlmProvider  string          `yaml:"llmProvider"`
+	OpenAi       OpenAiConfig    `yaml:"openAi"`
+	FireworksAi  FireworksConfig `yaml:"fireworksAi"`
+	Claude       ClaudeConfig    `yaml:"claude"`
 }
 
 type OpenAiConfig struct {
