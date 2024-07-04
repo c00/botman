@@ -16,7 +16,7 @@ import (
 	"github.com/c00/botman/models"
 )
 
-const version = "1.1.4"
+const version = "1.1.5"
 
 var messages []models.ChatMessage = []models.ChatMessage{
 	{

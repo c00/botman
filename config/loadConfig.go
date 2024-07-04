@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"strconv"
 
 	"gopkg.in/yaml.v3"
 )
@@ -26,7 +27,8 @@ func NewAppConfig() BotmanConfig {
 			Model: "accounts/fireworks/models/mixtral-8x22b-instruct",
 		},
 		Claude: ClaudeConfig{
-			Model: "claude-3-5-sonnet-20240620",
+			Model:     "claude-3-5-sonnet-20240620",
+			MaxTokens: 1024,
 		},
 	}
 }
@@ -117,6 +119,7 @@ func LoadFromEnv() BotmanConfig {
 			ApiKey:       stringFromEnv("BOTMAN_CLAUDE_API_KEY", def.Claude.ApiKey),
 			Model:        stringFromEnv("BOTMAN_CLAUDE_MODEL", def.Claude.Model),
 			SystemPrompt: stringFromEnv("BOTMAN_CLAUDE_PROMPT", def.Claude.SystemPrompt),
+			MaxTokens:    intFromEnv("BOTMAN_CLAUDE_MAX_TOKENS", def.Claude.MaxTokens),
 		},
 	}
 }
@@ -140,6 +143,20 @@ func boolFromEnv(key string, fallback bool) bool {
 	}
 
 	return false
+}
+
+func intFromEnv(key string, fallback int) int {
+	val := os.Getenv(key)
+	if val == "" {
+		return fallback
+	}
+
+	intVal, err := strconv.Atoi(val)
+	if err != nil {
+		return fallback
+	}
+
+	return intVal
 }
 
 func Load(path string) (BotmanConfig, error) {
